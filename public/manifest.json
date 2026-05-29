@@ -1,11 +1,11 @@
 {
-  "name": "Wrestling Sparring",
-  "short_name": "Sparring",
-  "description": "Train, track, and improve your wrestling skills through sparring sessions.",
+  "name": "Paint Marker",
+  "short_name": "Paint",
+  "description": "Open your camera, zoom in on a person, and mark them with red paint.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#000000",
-  "theme_color": "#D32F2F",
+  "theme_color": "#000000",
   "orientation": "portrait",
   "icons": [
     {
