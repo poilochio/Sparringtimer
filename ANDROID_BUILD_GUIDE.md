@@ -1,289 +1,96 @@
-# Android App Build Guide for Wrestling Sparring Timer
+# Running Paint Marker on your Android phone
 
-This guide will walk you through converting your PWA into a native Android app that can be published on the Google Play Store.
+Capacitor is **already set up** in this repo (app name `Paint Marker`,
+package `com.paintmarker.app`, camera permission added). You only need to
+build it and run it on your phone. The build itself must happen on your own
+computer — it needs Android Studio and the Android SDK.
 
-## Prerequisites
+## What you need (one-time)
 
-1. **Node.js and npm** (already installed)
-2. **Android Studio** - Download from: https://developer.android.com/studio
-3. **Java Development Kit (JDK)** - Usually comes with Android Studio
+1. **Node.js** (v18+): https://nodejs.org
+2. **Android Studio**: https://developer.android.com/studio
+   (it installs the Android SDK and the JDK for you)
+3. An **Android phone** with a USB cable, or use the built-in emulator.
 
-## Step 1: Install Capacitor
-
-Open your terminal in the project directory and run:
-
-```bash
-npm install @capacitor/core @capacitor/cli @capacitor/android
-```
-
-## Step 2: Initialize Capacitor
-
-Run the initialization command:
+## Get the code onto your computer
 
 ```bash
-npx cap init
+git clone https://github.com/poilochio/Sparringtimer.git
+cd Sparringtimer
+git checkout claude/camera-paint-marking-app-Hp9OU
+npm install
 ```
 
-You'll be prompted for the following information:
+## Build and open in Android Studio
 
-- **App name**: `Wrestling Sparring Timer`
-- **App ID (package name)**: `com.wrestlingsparring.app`
-  - Use reverse domain notation (com.yourname.appname)
-  - This CANNOT be changed later, so choose carefully
-  - Must be unique on the Play Store
-- **Web asset directory**: `dist` (press Enter to accept default)
-
-## Step 3: Build Your Web App
-
-Build the production version of your web app:
+One command does everything (build the web app, copy it into the Android
+project, and open Android Studio):
 
 ```bash
-npm run build
+npm run android
 ```
 
-This creates optimized files in the `dist` folder.
+(That's a shortcut for `vite build && npx cap sync android && npx cap open android`.)
 
-## Step 4: Add Android Platform
+Android Studio will open and sync Gradle — give it a minute the first time.
 
-Add the Android platform to your project:
+## Run it on your phone
+
+### Option A — your physical phone (recommended, so the camera works)
+
+1. On the phone: **Settings → About phone → tap "Build number" 7 times** to
+   unlock Developer options.
+2. **Settings → Developer options → enable "USB debugging"**.
+3. Plug the phone into your computer with USB and accept the debugging prompt
+   on the phone.
+4. In Android Studio, pick your phone from the device dropdown at the top and
+   press the green **Run** ▶ button.
+5. The app installs and launches. The **first time you open the camera it asks
+   for camera permission — tap Allow.** Then aim, zoom, and hit the red button
+   to mark with paint.
+
+### Option B — emulator
+
+The Android emulator can simulate a camera, but the live image is a synthetic
+scene. For the real experience use a physical phone. To try the emulator:
+Android Studio → **Device Manager → Create device** (e.g. Pixel 7, Android 13+),
+then press **Run**.
+
+## After you change the web code
 
 ```bash
-npx cap add android
+npm run cap:sync   # rebuilds the web app and copies it into the Android project
 ```
 
-This creates an `android` folder with all necessary Android project files.
+then press **Run** again in Android Studio.
 
-## Step 5: Sync Web Assets to Android
+## Building a shareable / Play Store package
 
-Sync your built web app to the Android project:
+To hand the app to someone else or publish it, generate a signed build:
 
-```bash
-npx cap sync
-```
+1. In Android Studio: **Build → Generate Signed Bundle / APK**
+2. Choose **APK** (to sideload onto a phone) or **Android App Bundle (.aab)**
+   (required for the Play Store).
+3. Create a keystore the first time (**keep the keystore file and passwords
+   safe — you can't update the app without them**), then finish the wizard.
+4. An installable `.apk` ends up under `android/app/release/`. Copy it to a
+   phone and open it to install (you'll need to allow "install from unknown
+   sources").
 
-Run this command every time you make changes to your web app.
+For full Play Store publishing steps (store listing, signing, review), see
+Capacitor's and Google's docs:
 
-## Step 6: Configure Android App
-
-### Update App Icons
-
-1. Navigate to `android/app/src/main/res/`
-2. Replace the default icons in `mipmap-*` folders with your app icons
-3. Use Android Studio's Image Asset tool for easy icon generation:
-   - Right-click `res` folder → New → Image Asset
-   - Select your icon image
-   - Generate all sizes
-
-### Update App Name and Theme
-
-Edit `android/app/src/main/res/values/strings.xml`:
-
-```xml
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="app_name">Wrestling Sparring Timer</string>
-    <string name="title_activity_main">Wrestling Sparring Timer</string>
-    <string name="package_name">com.wrestlingsparring.app</string>
-    <string name="custom_url_scheme">com.wrestlingsparring.app</string>
-</resources>
-```
-
-### Set App Permissions
-
-Edit `android/app/src/main/AndroidManifest.xml` to add any required permissions:
-
-```xml
-<uses-permission android:name="android.permission.INTERNET" />
-<uses-permission android:name="android.permission.VIBRATE" />
-<uses-permission android:name="android.permission.WAKE_LOCK" />
-```
-
-## Step 7: Open in Android Studio
-
-Open the Android project:
-
-```bash
-npx cap open android
-```
-
-Wait for Android Studio to:
-- Index the project
-- Download dependencies
-- Sync Gradle files
-
-## Step 8: Test on Emulator or Device
-
-### Using Android Emulator:
-
-1. In Android Studio: Tools → Device Manager
-2. Create a new Virtual Device (recommended: Pixel 5 with Android 13+)
-3. Click Run (green play button) to launch on emulator
-
-### Using Physical Device:
-
-1. Enable Developer Mode on your Android phone:
-   - Go to Settings → About Phone
-   - Tap "Build Number" 7 times
-2. Enable USB Debugging:
-   - Settings → Developer Options → USB Debugging
-3. Connect phone via USB
-4. Click Run in Android Studio
-
-## Step 9: Generate Signed APK/AAB for Play Store
-
-### Create a Keystore (First Time Only)
-
-1. In Android Studio: Build → Generate Signed Bundle/APK
-2. Select "Android App Bundle" (AAB format required for Play Store)
-3. Click "Create new..." under Key store path
-4. Fill in the form:
-   - **Key store path**: Choose a secure location (NOT in your project folder)
-   - **Password**: Create a strong password
-   - **Alias**: Your app name or identifier
-   - **Validity**: 25 years (standard)
-   - Fill in certificate info (name, organization, etc.)
-5. Click OK
-
-**CRITICAL**: Save your keystore file and passwords securely. You CANNOT update your app without them!
-
-### Generate Release Build
-
-1. Build → Generate Signed Bundle/APK
-2. Select "Android App Bundle" (.aab)
-3. Select your keystore file
-4. Enter keystore password and key password
-5. Select build variant: **release**
-6. Check both signature versions (V1 and V2)
-7. Click Finish
-
-Your signed AAB file will be in: `android/app/release/app-release.aab`
-
-## Step 10: Prepare for Play Store
-
-### Create Play Store Assets
-
-You'll need:
-
-1. **App Icon**: 512x512 PNG (no transparency)
-2. **Feature Graphic**: 1024x500 JPG/PNG
-3. **Screenshots**: At least 2 phone screenshots (minimum 320px)
-4. **Short Description**: Max 80 characters
-5. **Full Description**: Max 4000 characters
-6. **Privacy Policy URL** (required if app collects data)
-
-### Create Google Play Developer Account
-
-1. Go to: https://play.google.com/console
-2. Pay one-time $25 registration fee
-3. Complete account setup
-
-### Upload Your App
-
-1. Click "Create app" in Play Console
-2. Fill in app details:
-   - App name: Wrestling Sparring Timer
-   - Default language: English
-   - App or Game: App
-   - Free or Paid: Free
-3. Complete all required sections:
-   - Store listing (descriptions, graphics, screenshots)
-   - Content rating questionnaire
-   - Target audience
-   - Privacy policy
-4. Go to "Release" → "Production"
-5. Click "Create new release"
-6. Upload your `app-release.aab` file
-7. Fill in release notes
-8. Click "Review release"
-9. Submit for review
-
-### Review Process
-
-- Google typically reviews apps in 1-7 days
-- You'll receive email updates on review status
-- Fix any issues flagged by reviewers
-- Once approved, your app goes live!
-
-## Updating Your App
-
-When you make changes to your web app:
-
-```bash
-# 1. Make your changes to React code
-# 2. Build the web app
-npm run build
-
-# 3. Sync to Android
-npx cap sync
-
-# 4. Open in Android Studio
-npx cap open android
-
-# 5. Increment version in android/app/build.gradle
-# Find and update:
-versionCode 2  // Increment by 1
-versionName "1.1.0"  // Update version string
-
-# 6. Generate new signed AAB
-# 7. Upload to Play Console as new release
-```
+- Capacitor Android workflow: https://capacitorjs.com/docs/android
+- Play Console: https://play.google.com/console
 
 ## Troubleshooting
 
-### Build Errors
-
-- Clean project: Build → Clean Project
-- Invalidate caches: File → Invalidate Caches / Restart
-- Check Gradle sync completed successfully
-
-### App Crashes
-
-- Check logcat in Android Studio for error messages
-- Verify all required permissions are in AndroidManifest.xml
-- Test on physical device if emulator issues persist
-
-### Capacitor Sync Issues
-
-```bash
-# Clear Capacitor cache and reinstall
-npx cap sync --force
-```
-
-## Useful Commands Reference
-
-```bash
-# Build web app
-npm run build
-
-# Sync web changes to Android
-npx cap sync
-
-# Open Android Studio
-npx cap open android
-
-# Update Capacitor
-npm update @capacitor/core @capacitor/cli @capacitor/android
-
-# Copy web assets only
-npx cap copy
-
-# Update native plugins
-npx cap update
-```
-
-## Additional Resources
-
-- **Capacitor Documentation**: https://capacitorjs.com/docs
-- **Android Developer Guide**: https://developer.android.com/guide
-- **Play Console Help**: https://support.google.com/googleplay/android-developer
-- **App Signing Best Practices**: https://developer.android.com/studio/publish/app-signing
-
-## Notes
-
-- Keep your keystore file backed up in multiple secure locations
-- Never commit keystore files to version control
-- Test thoroughly on multiple Android devices/versions before release
-- Monitor Play Console for crash reports and user feedback
-- Respond to user reviews to maintain good app rating
-
-Good luck with your app launch! 🎉
+- **Camera is black / "permission denied":** make sure you tapped *Allow* on
+  the camera prompt. If you dismissed it, go to the phone's
+  **Settings → Apps → Paint Marker → Permissions → Camera → Allow**.
+- **Gradle sync fails:** Android Studio → **File → Invalidate Caches / Restart**,
+  and let it finish downloading SDK components.
+- **`npx cap open android` does nothing:** open the `android/` folder directly
+  in Android Studio instead.
+- **Changes don't show up:** you must run `npm run cap:sync` after editing the
+  web code, then Run again.

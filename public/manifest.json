@@ -1,20 +1,20 @@
 {
-  "name": "Wrestling Sparring",
-  "short_name": "Sparring",
-  "description": "Train, track, and improve your wrestling skills through sparring sessions.",
-  "start_url": "/",
+  "name": "Paint Marker",
+  "short_name": "Paint",
+  "description": "Open your camera, zoom in on a person, and mark them with red paint.",
+  "start_url": ".",
   "display": "standalone",
   "background_color": "#000000",
-  "theme_color": "#D32F2F",
+  "theme_color": "#000000",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "/icons/icon-192.png",
+      "src": "icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/icons/icon-512.png",
+      "src": "icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
